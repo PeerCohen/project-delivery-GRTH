@@ -12,10 +12,9 @@ export function defaultAction() {
   };
 }
 
-export function setLogin(userName, password) {
+export function setLogin(userName) {
   return {
     type: SET_LOGIN,
     userName,
-    password,
   };
 }

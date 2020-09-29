@@ -16,7 +16,7 @@ import { compose } from 'redux';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 
-import IconButton from '@material-ui/core/IconButton';
+
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -33,16 +33,21 @@ import history from 'utils/history';
 
 import './login.scss';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import Icon from '@material-ui/core/Icon';
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Button from '@material-ui/core/Button';
-
-import { FormGroup } from '@material-ui/core';
+// eslint-disable-next-line import/no-unresolved
+// import { Alert } from '@material-ui/lab';
+import IconButton from '@material-ui/core/IconButton';
+import Collapse from '@material-ui/core/Collapse';
+import CloseIcon from '@material-ui/icons/Close';
 
 const navigateTo = () => history.push('/');
 
 export function LoginPage(onSubmit) {
   useInjectReducer({ key: 'loginPage', reducer });
   useInjectSaga({ key: 'loginPage', saga });
+
+  const [open, setOpen] = React.useState(false);
 
   const [valuePassword, setValuePassword] = React.useState({
     password: '',
@@ -70,68 +75,93 @@ export function LoginPage(onSubmit) {
     event.preventDefault();
   };
   return (
-    <div>
+    <div className="loginDiv">
+      {/* <Collapse in={open}>
+        <Alert
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+        >
+          Close me!
+        </Alert>
+      </Collapse> */}
       <Helmet>
         <title>LoginPage</title>
         <meta name="description" content="Description of LoginPage" />
       </Helmet>
-      <FormattedMessage {...messages.header} />
+      {/* <FormattedMessage {...messages.header} /> */}
+      <hr />
 
-      <FormGroup onSubmit={e => onSubmit(e, valueUserName, valuePassword)}>
-        <FormControl>
-          <InputLabel htmlFor="standard-adornment-password">
-            userName
-          </InputLabel>
-          <Input
-            id="standard-basic"
-            startAdornment={<InputAdornment position="start" />}
-            value={valueUserName.password}
-            onChange={handleChangeU('userName')}
-          />
-          <AccountCircleIcon color="action" />
-        </FormControl>
-        <br />
-        <FormControl>
-          <InputLabel htmlFor="standard-adornment-password">
-            Password
-          </InputLabel>
-          <Input
-            id="standard-adornment-password"
-            type={valuePassword.showPassword ? 'text' : 'password'}
-            value={valuePassword.password}
-            onChange={handleChangeP('password')}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                >
-                  {valuePassword.showPassword ? (
-                    <Visibility />
-                  ) : (
-                    <VisibilityOff />
-                  )}
-                </IconButton>
-              </InputAdornment>
-            }
-          />
-        </FormControl>
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          endIcon={<Icon>send</Icon>}
-        >
-          Send
-        </Button>
-      </FormGroup>
+      <FormControl>
+        <InputLabel htmlFor="standard-adornment-password">userName</InputLabel>
+        <Input
+          id="standard-adornment-password"
+          value={valueUserName.password}
+          onChange={handleChangeU('userName')}
+          endAdornment={
+            <InputAdornment position="end">
+              <AccountCircleIcon color="action" />
+            </InputAdornment>
+          }
+        />
+      </FormControl>
+      <br />
+      <br />
+      <br />
+      <FormControl>
+        <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+        <Input
+          id="standard-adornment-password"
+          type={valuePassword.showPassword ? 'text' : 'password'}
+          value={valuePassword.password}
+          onChange={handleChangeP('password')}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+              >
+                {valuePassword.showPassword ? (
+                  <Visibility />
+                ) : (
+                  <VisibilityOff />
+                )}
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+      </FormControl>
+      <br />
+      <br />
+      <br />
+      <Button
+        variant="contained"
+        color="primary"
+        type="submit"
+        endIcon={<ArrowRightIcon color="action" fontSize="large" />}
+        onSubmit={e => onSubmit(e, valueUserName)}
+        onClick={() => {
+          setOpen(true);
+        }}
+      >
+        login
+      </Button>
+      <hr />
     </div>
   );
 }
 
 LoginPage.propTypes = {
-  onSubmit: PropTypes.func,
   dispatch: PropTypes.func.isRequired,
 };
 

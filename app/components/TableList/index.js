@@ -20,6 +20,14 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+
+import {
+  makeSelectdelivery,
+  makeSelectcurrentDelivery,
+} from 'containers/App/selectors';
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
@@ -69,15 +77,29 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: 'name',
+    id: 'Name',
     numeric: false,
     disablePadding: true,
-    label: 'Dessert (100g serving)',
+    label: 'Name',
   },
-  { id: 'calories', numeric: true, disablePadding: false, label: 'Calories' },
-  { id: 'fat', numeric: true, disablePadding: false, label: 'Fat (g)' },
-  { id: 'carbs', numeric: true, disablePadding: false, label: 'Carbs (g)' },
-  { id: 'protein', numeric: true, disablePadding: false, label: 'Protein (g)' },
+  {
+    id: 'AddressForm',
+    numeric: true,
+    disablePadding: false,
+    label: 'Address Form',
+  },
+  {
+    id: 'AddressTo',
+    numeric: true,
+    disablePadding: false,
+    label: 'Address To',
+  },
+  {
+    id: 'DateOfDelivery',
+    numeric: true,
+    disablePadding: false,
+    label: 'Date Of Delivery',
+  },
 ];
 
 function EnhancedTableHead(props) {
@@ -236,7 +258,16 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function EnhancedTable() {
+EnhancedTable.propTypes = {
+  listDelivery: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
+  currentDelivery: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+};
+const mapStateToProps = createStructuredSelector({
+  listDelivery: makeSelectdelivery(),
+  currentDelivery: makeSelectcurrentDelivery(),
+});
+
+export function EnhancedTable({ listDelivery, currentDelivery }) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -381,3 +412,7 @@ export default function EnhancedTable() {
     </div>
   );
 }
+
+const withConnect = connect(mapStateToProps);
+
+export default compose(withConnect)(EnhancedTable);

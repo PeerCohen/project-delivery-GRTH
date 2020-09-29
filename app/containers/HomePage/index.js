@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import Datagrid from 'components/Datagrid';
+import TableList from 'components/TableList';
 import messages from './messages';
 
 export default function HomePage() {
@@ -16,7 +16,7 @@ export default function HomePage() {
       <h1>
         <FormattedMessage {...messages.header} />
       </h1>
-      <Datagrid />
+      <TableList />
     </div>
   );
 }

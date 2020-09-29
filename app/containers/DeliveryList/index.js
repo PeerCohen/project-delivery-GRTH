@@ -25,6 +25,8 @@ import {
   deleteDelivery,
   getDelivery,
 } from 'containers/App/actions';
+import history from 'utils/history';
+import AddDelivery from 'containers/AddDelivery/Loadable';
 import makeSelectDeliveryList from './selectors';
 import reducer from './reducer';
 import saga from './saga';
@@ -41,28 +43,27 @@ export function DeliveryList(
 ) {
   useInjectReducer({ key: 'deliveryList', reducer });
   useInjectSaga({ key: 'deliveryList', saga });
-
   function rowSelected(d) {
     const currentDeliveryId = currentDelivery ? currentDelivery.id : '';
     if (d.id === currentDeliveryId) return;
     onSelectDelivery(d.id);
   }
-  function renderdelivery() {
-    const currentDeliveryId = currentDelivery ? currentDelivery.id : '';
-    return listDelivery.map(d => (
-      <div key={d.id} className={d.id === currentDeliveryId ? 'selected' : ''}>
-        <Button
-          onClick={() => {
-            rowSelected(d);
-          }}
-        >
-          Click me
-        </Button>
-        {d.id}
-        {d.name}
-      </div>
-    ));
-  }
+  // function renderdelivery() {
+  //   const currentDeliveryId = currentDelivery ? currentDelivery.id : '';
+  //   return listDelivery.map(d => (
+  //     <div key={d.id} className={d.id === currentDeliveryId ? 'selected' : ''}>
+  //       <Button
+  //         onClick={() => {
+  //           rowSelected(d);
+  //         }}
+  //       >
+  //         Click me
+  //       </Button>
+  //       {d.id}
+  //       {d.name}
+  //     </div>
+  //   ));
+  // }
   function renderCurrentDelivery() {
     return (
       <div>
@@ -80,10 +81,10 @@ export function DeliveryList(
         <meta name="description" content="Description of DeliveryList" />
       </Helmet>
       <FormattedMessage {...messages.header} />
-      <Button size="large">Add new delivery</Button>
-      {listDelivery && (
-        <div className="container-listDelivery">{renderdelivery()}</div>
-      )}
+      <Button size="large" onClick={() => history.push('/AddDelivery')}>
+        Add new delivery
+      </Button>
+      {listDelivery && <div className="container-listDelivery" />}
       {listDelivery && (
         <div className="container-listDelivery">{renderCurrentDelivery()}</div>
       )}
