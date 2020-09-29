@@ -4,32 +4,33 @@
  *
  */
 
-import React, { memo, useState } from 'react';
+import React, {memo, useState} from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Helmet } from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
-import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
+import {connect} from 'react-redux';
+import {Helmet} from 'react-helmet';
+import {FormattedMessage} from 'react-intl';
+import {createStructuredSelector} from 'reselect';
+import {compose} from 'redux';
 
-import { useInjectSaga } from 'utils/injectSaga';
-import { useInjectReducer } from 'utils/injectReducer';
+import {useInjectSaga} from 'utils/injectSaga';
+import {useInjectReducer} from 'utils/injectReducer';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
-import { addDelivery } from 'containers/App/actions';
+import {addDelivery} from 'containers/App/actions';
 import makeSelectAddDelivery from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import messages from './messages';
+import './index.scss';
 
 export function AddDelivery(onAdded) {
-  useInjectReducer({ key: 'addDelivery', reducer });
-  useInjectSaga({ key: 'addDelivery', saga });
+  useInjectReducer({key: 'addDelivery', reducer});
+  useInjectSaga({key: 'addDelivery', saga});
   const [add, setAdd] = useState('');
   function handleAddChange(propertyName, event) {
-    const addDel = { ...add };
+    const addDel = {...add};
     addDel[propertyName] = event.target.value;
     setAdd(addDel);
   }
@@ -106,7 +107,7 @@ export function AddDelivery(onAdded) {
               date: '',
             });
           }}
-          variant="contained"
+          variant="outlined"
           color="primary"
           endIcon={<PlaylistAddIcon />}
         >
@@ -123,7 +124,7 @@ export function AddDelivery(onAdded) {
         <meta name="description" content="Description of AddDelivery" />
       </Helmet>
       <FormattedMessage {...messages.header} />
-      <div>{AddingToList()}</div>
+      <div className="AddingDiv">{AddingToList()}</div>
     </div>
   );
 }

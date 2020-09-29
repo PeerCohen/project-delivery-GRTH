@@ -27,6 +27,7 @@ import {
 } from 'containers/App/actions';
 import history from 'utils/history';
 import AddDelivery from 'containers/AddDelivery/Loadable';
+import AddIcon from '@material-ui/icons/Add';
 import makeSelectDeliveryList from './selectors';
 import reducer from './reducer';
 import saga from './saga';
@@ -81,7 +82,14 @@ export function DeliveryList(
         <meta name="description" content="Description of DeliveryList" />
       </Helmet>
       <FormattedMessage {...messages.header} />
-      <Button size="large" onClick={() => history.push('/AddDelivery')}>
+      <br />
+      <Button
+        variant="outlined"
+        color="primary"
+        size="large"
+        onClick={() => history.push('/AddDelivery')}
+        endIcon={<AddIcon color="action" fontSize="large" />}
+      >
         Add new delivery
       </Button>
       {listDelivery && <div className="container-listDelivery" />}

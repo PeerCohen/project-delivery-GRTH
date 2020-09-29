@@ -1,8 +1,23 @@
+.wrapper{
+    background-color: white
+}
 .GRTHimg{
+        
         width: 35%;
+    position: relative;
+    left: 36%;
     }
 .imgHeader{
     position: relative;
-    left: 30%;
-    width: fit-content;
+    
+    background-color: white;
+}
+.bottomNavigation{
+    border-bottom: solid;
+    position: relative;
+    right: 4%;
+    width: 104%;
+    border-bottom-color: #9ba6d7;
+    border-bottom-width: thin;
+    margin-bottom: 2%;
 }

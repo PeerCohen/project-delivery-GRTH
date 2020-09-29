@@ -16,7 +16,6 @@ import { compose } from 'redux';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 
-
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -43,7 +42,7 @@ import CloseIcon from '@material-ui/icons/Close';
 
 const navigateTo = () => history.push('/');
 
-export function LoginPage(onSubmit) {
+export function LoginPage(props) {
   useInjectReducer({ key: 'loginPage', reducer });
   useInjectSaga({ key: 'loginPage', saga });
 
@@ -105,7 +104,7 @@ export function LoginPage(onSubmit) {
         <InputLabel htmlFor="standard-adornment-password">userName</InputLabel>
         <Input
           id="standard-adornment-password"
-          value={valueUserName.password}
+          value={valueUserName.UserName}
           onChange={handleChangeU('userName')}
           endAdornment={
             <InputAdornment position="end">
@@ -145,14 +144,14 @@ export function LoginPage(onSubmit) {
       <br />
       <br />
       <Button
-        variant="contained"
+        variant="outlined"
         color="primary"
         type="submit"
         endIcon={<ArrowRightIcon color="action" fontSize="large" />}
-        onSubmit={e => onSubmit(e, valueUserName)}
-        onClick={() => {
-          setOpen(true);
-        }}
+        onClick={e => props.onSubmit(e, valueUserName)}
+        // onClick={() => {
+        //   setOpen(true);
+        // }}
       >
         login
       </Button>
@@ -162,7 +161,7 @@ export function LoginPage(onSubmit) {
 }
 
 LoginPage.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -171,12 +170,12 @@ const mapStateToProps = createStructuredSelector({
 
 function mapDispatchToProps(dispatch) {
   return {
-    onSubmit: (event, userName, password) => {
+    onSubmit: (event, userName) => {
       event.preventDefault();
-      dispatch(setLogin(userName, password));
+      dispatch(setLogin(userName));
+      debugger;
       navigateTo();
     },
-    dispatch,
   };
 }
 
