@@ -53,7 +53,7 @@ function Header() {
             label="List Delivery"
             value="list delivery"
             icon={<ListIcon style={{fontSize: 40}} />}
-            onClick={() => history.push('/DeliveryList')}
+            onClick={() => history.push('/DeliveryTable')}
           />
         </BottomNavigation>
       </div>

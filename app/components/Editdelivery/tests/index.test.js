@@ -1,6 +1,6 @@
 /**
  *
- * Tests for DeliveryList
+ * Tests for Editdelivery
  *
  * @see https://github.com/react-boilerplate/react-boilerplate/tree/master/docs/testing
  *
@@ -11,16 +11,15 @@ import { render } from 'react-testing-library';
 import { IntlProvider } from 'react-intl';
 // import 'jest-dom/extend-expect'; // add some helpful assertions
 
-import { DeliveryList } from '../index';
+import Editdelivery from '../index';
 import { DEFAULT_LOCALE } from '../../../i18n';
 
-describe('<DeliveryList />', () => {
+describe('<Editdelivery />', () => {
   it('Expect to not log errors in console', () => {
     const spy = jest.spyOn(global.console, 'error');
-    const dispatch = jest.fn();
     render(
       <IntlProvider locale={DEFAULT_LOCALE}>
-        <DeliveryList dispatch={dispatch} />
+        <Editdelivery />
       </IntlProvider>,
     );
     expect(spy).not.toHaveBeenCalled();
@@ -40,7 +39,7 @@ describe('<DeliveryList />', () => {
       container: { firstChild },
     } = render(
       <IntlProvider locale={DEFAULT_LOCALE}>
-        <DeliveryList />
+        <Editdelivery />
       </IntlProvider>,
     );
     expect(firstChild).toMatchSnapshot();

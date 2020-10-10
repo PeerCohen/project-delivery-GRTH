@@ -4,36 +4,37 @@
  *
  */
 
-import React, {memo, useState} from 'react';
+import React, { memo, useState } from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {Helmet} from 'react-helmet';
-import {FormattedMessage} from 'react-intl';
-import {createStructuredSelector} from 'reselect';
-import {compose} from 'redux';
+import { connect } from 'react-redux';
+import { Helmet } from 'react-helmet';
+import { FormattedMessage } from 'react-intl';
+import { createStructuredSelector } from 'reselect';
+import { compose } from 'redux';
 
-import {useInjectSaga} from 'utils/injectSaga';
-import {useInjectReducer} from 'utils/injectReducer';
+import { useInjectSaga } from 'utils/injectSaga';
+import { useInjectReducer } from 'utils/injectReducer';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
-import {addDelivery} from 'containers/App/actions';
+import { addDelivery } from 'containers/App/actions';
+
 import makeSelectAddDelivery from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import messages from './messages';
 import './index.scss';
 
-export function AddDelivery(onAdded) {
-  useInjectReducer({key: 'addDelivery', reducer});
-  useInjectSaga({key: 'addDelivery', saga});
+export function AddDelivery({ onAdded }) {
+  useInjectReducer({ key: 'addDelivery', reducer });
+  useInjectSaga({ key: 'addDelivery', saga });
   const [add, setAdd] = useState('');
-  function handleAddChange(propertyName, event) {
-    const addDel = {...add};
+  const handleAddChange = propertyName => event => {
+    const addDel = { ...add };
     addDel[propertyName] = event.target.value;
     setAdd(addDel);
-  }
+  };
   function AddingToList() {
     return (
       <form noValidate>
@@ -42,7 +43,7 @@ export function AddDelivery(onAdded) {
           label="Name"
           className="textField"
           value={add.name}
-          onChange={handleAddChange.bind(this, 'name')}
+          onChange={handleAddChange('name')}
         />
         <br />
         <TextField
@@ -50,7 +51,7 @@ export function AddDelivery(onAdded) {
           label="email"
           className="textField"
           value={add.email}
-          onChange={handleAddChange.bind(this, 'email')}
+          onChange={handleAddChange('email')}
         />
         <br />
         <TextField
@@ -58,7 +59,7 @@ export function AddDelivery(onAdded) {
           label="phone"
           className="textField"
           value={add.phone}
-          onChange={handleAddChange.bind(this, 'phone')}
+          onChange={handleAddChange('phone')}
         />
         <br />
         <TextField
@@ -66,8 +67,7 @@ export function AddDelivery(onAdded) {
           label="addressTo"
           className="textField"
           value={add.addressTo}
-          // eslint-disable-next-line react/jsx-no-bind
-          onChange={handleAddChange.bind(this, 'addressTo')}
+          onChange={handleAddChange('addressTo')}
         />
         <br />
         <TextField
@@ -75,8 +75,7 @@ export function AddDelivery(onAdded) {
           label="addressForm"
           className="textField"
           value={add.addressForm}
-          // eslint-disable-next-line react/jsx-no-bind
-          onChange={handleAddChange.bind(this, 'addressForm')}
+          onChange={handleAddChange('addressForm')}
         />
         <br />
         <TextField
@@ -89,8 +88,7 @@ export function AddDelivery(onAdded) {
             shrink: true,
           }}
           value={add.date}
-          // eslint-disable-next-line react/jsx-no-bind
-          onChange={handleAddChange.bind(this, 'date')}
+          onChange={handleAddChange('date')}
         />
         <br />
         <br />

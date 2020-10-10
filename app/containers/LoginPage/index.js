@@ -9,7 +9,6 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
@@ -23,19 +22,23 @@ import FormControl from '@material-ui/core/FormControl';
 
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import messages from './messages';
 import saga from './saga';
 import reducer from './reducer';
-import makeSelectLoginPage from './selectors';
-import { setLogin } from './actions';
+import {
+  makeSelectLoginPage,
+  makeSelectLogin,
+  makeSelectLogged,
+} from './selectors';
+import { setLogin, getLogin } from './actions';
 import history from 'utils/history';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import './login.scss';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Button from '@material-ui/core/Button';
-// eslint-disable-next-line import/no-unresolved
-// import { Alert } from '@material-ui/lab';
+import Alert from '@material-ui/lab/Alert';
 import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
 import CloseIcon from '@material-ui/icons/Close';
@@ -47,6 +50,9 @@ export function LoginPage(props) {
   useInjectSaga({ key: 'loginPage', saga });
 
   const [open, setOpen] = React.useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const [valuePassword, setValuePassword] = React.useState({
     password: '',
@@ -54,14 +60,14 @@ export function LoginPage(props) {
   });
 
   const [valueUserName, setValueUserName] = React.useState({
-    UserName: '',
+    userName: '',
   });
 
   const handleChangeP = prop => event => {
-    setValuePassword({ ...valuePassword, [prop]: event.target.value });
+    setValuePassword({ valuePassword, [prop]: event.target.value });
   };
-  const handleChangeU = prop => event => {
-    setValueUserName({ ...valueUserName, [prop]: event.target.value });
+  const handleChangeU = event => {
+    setValueUserName({ userName: event.target.value });
   };
   const handleClickShowPassword = () => {
     setValuePassword({
@@ -70,12 +76,47 @@ export function LoginPage(props) {
     });
   };
 
-  const handleMouseDownPassword = event => {
-    event.preventDefault();
+  const isCurrentUser = () => {
+    debugger;
+    if (
+      props.logged.find(
+        user =>
+          user.userName === valueUserName.userName &&
+          user.password === valuePassword.password,
+      )
+    )
+      alert('רשום במערכת ');
+    else {
+      alert('לא רשום במערכת ');
+    }
   };
+  const checkTextInput = () => {
+    if (!valueUserName || valueUserName.userName === '') {
+      alert('Please Enter your username');
+      return;
+    }
+    if (!valuePassword || valuePassword.password === '') {
+      alert('Please Enter password');
+      return;
+    }
+    setOpen(true);
+    props.onGetingUser(valueUserName.userName, valuePassword.password);
+    props.onSubmit(valueUserName.userName);
+    isCurrentUser();
+    // setTimeout(() => {
+    //   if (props.currentUser) {
+    //     console.log('yes');
+    //     alert('רשום במערכת ');
+    //   } else {
+    //     alert('לא רשום במערכת ');
+    //     console.log('no');
+    //   }
+    // }, 3000);
+  };
+
   return (
     <div className="loginDiv">
-      {/* <Collapse in={open}>
+      <Collapse in={open}>
         <Alert
           action={
             <IconButton
@@ -83,6 +124,7 @@ export function LoginPage(props) {
               color="inherit"
               size="small"
               onClick={() => {
+                navigateTo();
                 setOpen(false);
               }}
             >
@@ -90,22 +132,22 @@ export function LoginPage(props) {
             </IconButton>
           }
         >
-          Close me!
+          success logged !
         </Alert>
-      </Collapse> */}
+      </Collapse>
+
       <Helmet>
         <title>LoginPage</title>
         <meta name="description" content="Description of LoginPage" />
       </Helmet>
       {/* <FormattedMessage {...messages.header} /> */}
       <hr />
-
       <FormControl>
         <InputLabel htmlFor="standard-adornment-password">userName</InputLabel>
         <Input
+          required
           id="standard-adornment-password"
-          value={valueUserName.UserName}
-          onChange={handleChangeU('userName')}
+          onChange={handleChangeU}
           endAdornment={
             <InputAdornment position="end">
               <AccountCircleIcon color="action" />
@@ -119,16 +161,15 @@ export function LoginPage(props) {
       <FormControl>
         <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
         <Input
+          required
           id="standard-adornment-password"
           type={valuePassword.showPassword ? 'text' : 'password'}
-          value={valuePassword.password}
           onChange={handleChangeP('password')}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
                 aria-label="toggle password visibility"
                 onClick={handleClickShowPassword}
-                onMouseDown={handleMouseDownPassword}
               >
                 {valuePassword.showPassword ? (
                   <Visibility />
@@ -148,34 +189,38 @@ export function LoginPage(props) {
         color="primary"
         type="submit"
         endIcon={<ArrowRightIcon color="action" fontSize="large" />}
-        onClick={e => props.onSubmit(e, valueUserName)}
-        // onClick={() => {
-        //   setOpen(true);
-        // }}
+        onClick={checkTextInput}
       >
         login
       </Button>
       <hr />
+      <Backdrop open={open} onClick={handleClose}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 }
 
 LoginPage.propTypes = {
   onSubmit: PropTypes.func,
+  onGetingUser: PropTypes.func,
+  currentUser: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  logged: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
 };
 
 const mapStateToProps = createStructuredSelector({
   loginPage: makeSelectLoginPage(),
+  currentUser: makeSelectLogin(),
+  logged: makeSelectLogged(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    onSubmit: (event, userName) => {
-      event.preventDefault();
+    onSubmit: userName => {
       dispatch(setLogin(userName));
-      debugger;
-      navigateTo();
     },
+    onGetingUser: (userName, password) =>
+      dispatch(getLogin(userName, password)),
   };
 }
 

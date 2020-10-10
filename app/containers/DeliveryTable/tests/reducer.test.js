@@ -1,9 +1,9 @@
 // import produce from 'immer';
-import deliveryListReducer from '../reducer';
+import deliveryTableReducer from '../reducer';
 // import { someAction } from '../actions';
 
 /* eslint-disable default-case, no-param-reassign */
-describe('deliveryListReducer', () => {
+describe('deliveryTableReducer', () => {
   let state;
   beforeEach(() => {
     state = {
@@ -13,7 +13,7 @@ describe('deliveryListReducer', () => {
 
   it('returns the initial state', () => {
     const expectedResult = state;
-    expect(deliveryListReducer(undefined, {})).toEqual(expectedResult);
+    expect(deliveryTableReducer(undefined, {})).toEqual(expectedResult);
   });
 
   /**

@@ -9,6 +9,11 @@ const selectGlobal = state => state.global || initialState;
 
 const selectRouter = state => state.router;
 
+// function createSelector2(selector, selector2){
+//   let state = selector();
+//   selector2(state)
+// }
+
 const makeSelectLoading = () =>
   createSelector(
     selectGlobal,
@@ -27,6 +32,11 @@ const makeSelectdelivery = () =>
     globalState => globalState.deliveries,
   );
 
+const makeSelectUserName = () =>
+  createSelector(
+    selectGlobal,
+    globalState => globalState.userName,
+  );
 const makeSelectLocation = () =>
   createSelector(
     selectRouter,
@@ -45,4 +55,5 @@ export {
   makeSelectdelivery,
   makeSelectLocation,
   makeSelectcurrentDelivery,
+  makeSelectUserName,
 };

@@ -1,6 +1,6 @@
 /**
  *
- * Asynchronously loads the component for DeliveryList
+ * Asynchronously loads the component for Editdelivery
  *
  */
 

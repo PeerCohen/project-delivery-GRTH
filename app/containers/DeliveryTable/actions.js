@@ -1,6 +1,6 @@
 /*
  *
- * DeliveryList actions
+ * DeliveryTable actions
  *
  */
 

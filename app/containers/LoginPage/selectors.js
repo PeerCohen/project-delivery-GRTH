@@ -20,6 +20,15 @@ const makeSelectLoginPage = () =>
     selectLoginPageDomain,
     substate => substate,
   );
-
-export default makeSelectLoginPage;
+const makeSelectLogin = () =>
+  createSelector(
+    selectLoginPageDomain,
+    substate => substate.currentUserName,
+  );
+const makeSelectLogged = () =>
+  createSelector(
+    selectLoginPageDomain,
+    substate => substate.logged,
+  );
+export { makeSelectLoginPage, makeSelectLogin, makeSelectLogged };
 export { selectLoginPageDomain };
