@@ -60,9 +60,10 @@ export function deliveryLoadingError(error) {
 }
 // UPDATE DELIVERY
 
-export function updateDelivery() {
+export function updateDelivery(delivery) {
   return {
     type: UPDATE_DELIVERY,
+    delivery,
   };
 }
 export function updateDeliverySuccess(delivery, deliveries) {

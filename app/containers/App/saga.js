@@ -10,6 +10,8 @@ import {
   UPDATE_DELIVERY,
 } from './constants';
 
+import { GET_LOGIN, LOAD_LOGGED } from '../LoginPage/constants';
+
 import {
   deliveryLoaded,
   deliveryLoadingError,
@@ -22,7 +24,12 @@ import {
   deleteDeliveryError,
   deleteDeliverySuccess,
 } from './actions';
-
+import {
+  loggedLoadingError,
+  loggedLoaded,
+  getLoginError,
+  getLoginSuccess,
+} from '../LoginPage/actions';
 const baseUrl = '/api';
 
 export function* getList() {
@@ -36,6 +43,17 @@ export function* getList() {
   }
 }
 
+export function* getListLogged() {
+  const requestURL = `${baseUrl}/listLogged`;
+
+  try {
+    const list = yield call(request, requestURL);
+    yield put(loggedLoaded(list));
+  } catch (err) {
+    yield put(loggedLoadingError(err));
+  }
+}
+
 export function* get(action) {
   const requestURL = `${baseUrl}/get/${action.idDelivery}`;
 
@@ -46,7 +64,16 @@ export function* get(action) {
     yield put(getDeliveryError(err));
   }
 }
+export function* getLogin(action) {
+  const requestURL = `${baseUrl}/getLogin/${action.idLogin}`;
 
+  try {
+    const logged = yield call(request, requestURL);
+    yield put(getLoginSuccess(logged));
+  } catch (err) {
+    yield put(getLoginError(err));
+  }
+}
 export function* update(action) {
   const requestURL = `${baseUrl}/update`;
   const options = {
@@ -102,7 +129,9 @@ export function* remove(action) {
 
 export default function* loadData() {
   yield takeLatest(LOAD_DELIVERY, getList);
+  yield takeLatest(LOAD_LOGGED, getListLogged);
   yield takeEvery(GET_DELIVERY, get);
+  yield takeEvery(GET_LOGIN, getLogin);
   yield takeEvery(UPDATE_DELIVERY, update);
   yield takeEvery(DELETE_DELIVERY, remove);
   yield takeEvery(ADD_DELIVERY, add);

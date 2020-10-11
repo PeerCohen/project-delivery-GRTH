@@ -1,16 +1,16 @@
-import React, {memo} from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {createStructuredSelector} from 'reselect';
-import {compose} from 'redux';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { compose } from 'redux';
 import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 import 'react-table-v6/react-table.css';
 import Popover from '@material-ui/core/Popover';
 import PinDropIcon from '@material-ui/icons/PinDrop';
 
-import {useInjectSaga} from 'utils/injectSaga';
-import {useInjectReducer} from 'utils/injectReducer';
+import { useInjectSaga } from 'utils/injectSaga';
+import { useInjectReducer } from 'utils/injectReducer';
 import {
   makeSelectdelivery,
   makeSelectcurrentDelivery,
@@ -29,6 +29,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Typography from '@material-ui/core/Typography';
 import RoomIcon from '@material-ui/icons/Room';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import Tooltip from '@material-ui/core/Tooltip';
 import saga from './saga';
 import reducer from './reducer';
 import makeSelectDeliveryTable from './selectors';
@@ -44,8 +45,8 @@ export function DeliveryTable({
   onUpdateDeliveryField,
   ...props
 }) {
-  useInjectReducer({key: 'deliveryTable', reducer});
-  useInjectSaga({key: 'deliveryTable', saga});
+  useInjectReducer({ key: 'deliveryTable', reducer });
+  useInjectSaga({ key: 'deliveryTable', saga });
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [rowDateils, setRow] = React.useState();
@@ -65,11 +66,6 @@ export function DeliveryTable({
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
-  // const [value, setValue] = React.useState('recents');
-
-  // const handleChange = (event, newValue) => {
-  //   setValue(newValue);
-  // };
   const [openDialog, setOpenDialog] = React.useState(false);
 
   const handleClickOpenDialogEdit = () => {
@@ -83,16 +79,18 @@ export function DeliveryTable({
     setOpenMap(true);
   };
   function useData() {
-    const data = listDelivery.map(delivery => ({
-      id: delivery.id,
-      name: delivery.name,
-      phone: delivery.phone,
-      addressTo: delivery.addressTo,
-      latitudeFrom: delivery.latitudeFrom,
-      longitudeFrom: delivery.longitudeFrom,
-      latitudeTo: delivery.latitudeTo,
-      longitudeTo: delivery.longitudeTo,
-    }));
+    const data =
+      listDelivery &&
+      listDelivery.map(delivery => ({
+        id: delivery.id,
+        name: delivery.name,
+        phone: delivery.phone,
+        addressTo: delivery.addressTo,
+        latitudeFrom: delivery.latitudeFrom,
+        longitudeFrom: delivery.longitudeFrom,
+        latitudeTo: delivery.latitudeTo,
+        longitudeTo: delivery.longitudeTo,
+      }));
     return data;
   }
 
@@ -118,57 +116,45 @@ export function DeliveryTable({
       {
         Cell: row => (
           <div>
-            {/* <BottomNavigation value={value} onChange={handleChange}>
-              <BottomNavigationAction
-                label="Edit"
-                value="edit"
-                icon={<EditIcon />}
+            <Tooltip title="Edit">
+              <Button
+                className="editButton"
+                variant="outlined"
+                color="primary"
+                size="large"
+                justify-content="center"
+                endIcon={<EditIcon color="primary" fontSize="large" />}
                 onClick={() => {
-                  onSelectDelivery(row.index);
+                  onSelectDelivery(row.original.id);
                   handleClickOpenDialogEdit();
                 }}
               />
-              <BottomNavigationAction
-                label="Delete"
-                value="Delete"
-                icon={<DeleteIcon />}
+            </Tooltip>
+            {'     '}
+            <Tooltip title="Delete">
+              <Button
+                className="deleteButton"
+                variant="outlined"
+                color="primary"
+                size="large"
                 onClick={() => props.onDeleteDelivery(row.index)}
+                endIcon={<DeleteIcon color="action" fontSize="large" />}
               />
-              </BottomNavigation> */}
-            <Button
-              variant="outlined"
-              color="primary"
-              size="large"
-              justify-content="center"
-              endIcon={<EditIcon color="primary" fontSize="large" />}
-              onClick={() => {
-                onSelectDelivery(row.original.id);
-                handleClickOpenDialogEdit();
-              }}
-            />
+            </Tooltip>
             {'     '}
-            <Button
-              variant="outlined"
-              color="primary"
-              size="large"
-              onClick={() => props.onDeleteDelivery(row.index)}
-              endIcon={<DeleteIcon color="action" fontSize="large" />}
-            >
-              Delete
-            </Button>
-            {'     '}
-            <Button
-              variant="outlined"
-              color="primary"
-              size="large"
-              onClick={() => {
-                handelSetRowData(row.original);
-                handleClickOpenMap();
-              }}
-              endIcon={<RoomIcon fontSize="large" color="secondary" />}
-            >
-              map
-            </Button>
+            <Tooltip title="See the map at the bottom of the page ">
+              <Button
+                className="mapButton"
+                variant="outlined"
+                color="primary"
+                size="large"
+                onClick={() => {
+                  handelSetRowData(row.original);
+                  handleClickOpenMap();
+                }}
+                endIcon={<RoomIcon fontSize="large" color="secondary" />}
+              />
+            </Tooltip>
           </div>
         ),
       },
@@ -229,9 +215,6 @@ export function DeliveryTable({
           horizontal: 'center',
         }}
       >
-        {/* <div>
-          <Map row={rowD} />
-        </div> */}
         <Typography className="popup">
           <br />
           <br />
@@ -270,7 +253,9 @@ const mapStateToProps = createStructuredSelector({
 function mapDispatchToProps(dispatch) {
   return {
     onSelectDelivery: idDelivery => dispatch(getDelivery(idDelivery)),
-    onUpdateDelivery: delivery => dispatch(updateDelivery(delivery)),
+    onUpdateDelivery: delivery => {
+      dispatch(updateDelivery(delivery));
+    },
     onUpdateDeliveryField: (key, value) =>
       dispatch(updateDeliveryField(key, value)),
     onAddDelivery: delivery => dispatch(addDelivery(delivery)),

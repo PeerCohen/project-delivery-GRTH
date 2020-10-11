@@ -28,19 +28,31 @@ import {
   makeSelectLoading,
   makeSelectError,
 } from './selectors';
+import { makeSelectLogged } from '../LoginPage/selectors';
 import { loadDelivery } from './actions';
+import { loadLogged } from '../LoginPage/actions';
 
 import './app.scss';
 
-export function App({ deliveries, loading, error, onLoadDeliveries }) {
+export function App({
+  deliveries,
+  loading,
+  error,
+  onLoadDeliveries,
+  logged,
+  onLoadLogged,
+}) {
   useInjectSaga({ key: 'app', saga });
   useEffect(() => {
     if (!deliveries) onLoadDeliveries();
+    if (!logged) onLoadLogged();
   }, []);
 
   return (
     <div>
       <Header />
+      {logged && <div className="loading">logged...</div>}
+
       {loading && <div className="loading">loading...</div>}
       {error && <div className="error">error occured</div>}
       <Switch>
@@ -56,13 +68,16 @@ export function App({ deliveries, loading, error, onLoadDeliveries }) {
 }
 App.propTypes = {
   deliveries: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
+  logged: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   loading: PropTypes.bool,
   error: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   onLoadDeliveries: PropTypes.func,
+  onLoadLogged: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
   deliveries: makeSelectdelivery(),
+  logged: makeSelectLogged(),
   loading: makeSelectLoading(),
   error: makeSelectError(),
 });
@@ -70,6 +85,7 @@ const mapStateToProps = createStructuredSelector({
 function mapDispatchToProps(dispatch) {
   return {
     onLoadDeliveries: () => dispatch(loadDelivery()),
+    onLoadLogged: () => dispatch(loadLogged()),
   };
 }
 

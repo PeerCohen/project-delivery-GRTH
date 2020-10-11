@@ -26,7 +26,7 @@ import saga from './saga';
 import messages from './messages';
 import './index.scss';
 
-export function AddDelivery({ onAdded }) {
+export function AddDelivery({ onAdded, history }) {
   useInjectReducer({ key: 'addDelivery', reducer });
   useInjectSaga({ key: 'addDelivery', saga });
   const [add, setAdd] = useState('');
@@ -104,6 +104,7 @@ export function AddDelivery({ onAdded }) {
               addressTo: '',
               date: '',
             });
+            history.push('/DeliveryTable');
           }}
           variant="outlined"
           color="primary"
@@ -130,6 +131,7 @@ export function AddDelivery({ onAdded }) {
 AddDelivery.propTypes = {
   dispatch: PropTypes.func.isRequired,
   onAdded: PropTypes.func,
+  history: PropTypes.any,
 };
 
 const mapStateToProps = createStructuredSelector({

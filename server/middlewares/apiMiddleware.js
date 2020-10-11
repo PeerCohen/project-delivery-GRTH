@@ -4,6 +4,7 @@ const fs = require('fs');
 const router = express.Router();
 const BASE_DIR = __dirname.replace('middlewares', '');
 const jsonPath = `${BASE_DIR}\\data\\data.json`;
+const jsonPathLogin = `${BASE_DIR}\\data\\logged.json`;
 const bodyParser = require('body-parser');
 
 router.use(
@@ -18,6 +19,12 @@ router.use((req, res, next) => {
   next();
 });
 
+router.get('/listLogged', (req, res) => {
+  fs.readFile(jsonPathLogin, 'utf8', (err, data) => {
+    res.end(data);
+  });
+});
+
 router.get('/list', (req, res) => {
   console.log('this is list api');
   fs.readFile(jsonPath, 'utf8', (err, data) => {
@@ -25,6 +32,14 @@ router.get('/list', (req, res) => {
   });
 });
 
+router.get('/getLogin/:id', (req, res) => {
+  fs.readFile(jsonPathLogin, 'utf8', (err, data) => {
+    const list = JSON.parse(data);
+    const { id } = req.params;
+    const item = _getItem(list, id);
+    res.end(JSON.stringify(item));
+  });
+});
 router.get('/get/:id', (req, res) => {
   fs.readFile(jsonPath, 'utf8', (err, data) => {
     const list = JSON.parse(data);
@@ -94,17 +109,11 @@ const _getItem = (list, id) => {
 const _updateItem = (list, updatedItem) => {
   const newList = [...list];
   const currentItemIndex = newList.findIndex(
-    item => item.id.toString() === updatedItem.id.toString(),
+    item => item.id === updatedItem.id,
   );
   newList[currentItemIndex] = updatedItem;
   return newList;
 };
-function updateItemField(item, key, value) {
-  return {
-    ...item,
-    [key]: value,
-  };
-}
 const _deleteItem = (list, id) => {
   const newList = [...list];
   // const currentItemIndex = list.findIndex(

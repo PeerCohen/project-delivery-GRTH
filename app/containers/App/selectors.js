@@ -32,11 +32,6 @@ const makeSelectdelivery = () =>
     globalState => globalState.deliveries,
   );
 
-const makeSelectUserName = () =>
-  createSelector(
-    selectGlobal,
-    globalState => globalState.userName,
-  );
 const makeSelectLocation = () =>
   createSelector(
     selectRouter,
@@ -55,5 +50,4 @@ export {
   makeSelectdelivery,
   makeSelectLocation,
   makeSelectcurrentDelivery,
-  makeSelectUserName,
 };

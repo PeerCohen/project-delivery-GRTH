@@ -26,13 +26,12 @@ function Editdelivery({
   onUpdateDelivery,
   onUpdateDeliveryField,
   closeDialog,
-  openDialog
+  openDialog,
 }) {
   const handleEditChange = prop => event => {
     onUpdateDeliveryField(prop, event.target.value);
   };
- 
-
+debugger;
   const handleClose = () => {
     closeDialog();
   };
@@ -100,7 +99,7 @@ function Editdelivery({
         <DialogActions>
           <Button
             onClick={() => {
-              onUpdateDelivery();
+              onUpdateDelivery(currentDelivery);
               handleClose();
             }}
             color="primary"
@@ -121,6 +120,8 @@ Editdelivery.propTypes = {
   currentDelivery: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   onUpdateDelivery: PropTypes.func,
   onUpdateDeliveryField: PropTypes.func,
+  closeDialog: PropTypes.func,
+  openDialog: PropTypes.func,
 };
 // function mapDispatchToProps(dispatch) {
 //   return {
