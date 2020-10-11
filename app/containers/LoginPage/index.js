@@ -77,12 +77,10 @@ export function LoginPage(props) {
   };
 
   const isCurrentUser = () => {
-    debugger;
     if (
       props.logged.find(
-        user =>
-          user.userName === valueUserName.userName &&
-          user.password === valuePassword.password,
+        user => user.userName === valueUserName.userName,
+        //  && user.password === valuePassword.password,
       )
     )
       alert('רשום במערכת ');
@@ -132,7 +130,7 @@ export function LoginPage(props) {
             </IconButton>
           }
         >
-          success logged !
+          success checked !{'\n'} Click here to move to the home page
         </Alert>
       </Collapse>
 
