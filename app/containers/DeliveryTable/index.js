@@ -9,8 +9,6 @@ import 'react-table-v6/react-table.css';
 import Popover from '@material-ui/core/Popover';
 import PinDropIcon from '@material-ui/icons/PinDrop';
 
-import { useInjectSaga } from 'utils/injectSaga';
-import { useInjectReducer } from 'utils/injectReducer';
 import {
   makeSelectdelivery,
   makeSelectcurrentDelivery,
@@ -30,8 +28,6 @@ import Typography from '@material-ui/core/Typography';
 import RoomIcon from '@material-ui/icons/Room';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
-import saga from './saga';
-import reducer from './reducer';
 import makeSelectDeliveryTable from './selectors';
 
 import Map from '../../components/Map';
@@ -45,9 +41,6 @@ export function DeliveryTable({
   onUpdateDeliveryField,
   ...props
 }) {
-  useInjectReducer({ key: 'deliveryTable', reducer });
-  useInjectSaga({ key: 'deliveryTable', saga });
-
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [rowDateils, setRow] = React.useState();
   const handleClick = (rowData, column) => {
@@ -59,15 +52,14 @@ export function DeliveryTable({
   const handelSetRowData = data => {
     setRow(data);
   };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
-  const [openDialog, setOpenDialog] = React.useState(false);
 
+  const [openDialog, setOpenDialog] = React.useState(false);
   const handleClickOpenDialogEdit = () => {
     setOpenDialog(true);
   };

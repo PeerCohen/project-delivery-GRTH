@@ -30,5 +30,15 @@ const makeSelectLogged = () =>
     selectLoginPageDomain,
     substate => substate.logged,
   );
-export { makeSelectLoginPage, makeSelectLogin, makeSelectLogged };
+const makeSelectError = () =>
+  createSelector(
+    selectLoginPageDomain,
+    substate => substate.error,
+  );
+export {
+  makeSelectLoginPage,
+  makeSelectLogin,
+  makeSelectLogged,
+  makeSelectError,
+};
 export { selectLoginPageDomain };

@@ -1,9 +1,3 @@
-/*
- * HomePage
- *
- * This is the first thing users see of our App, at the '/' route
- *
- */
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -56,4 +50,13 @@ export default connect(mapStateToProps)(HomePage);
 //       <Component />
 //     </div>
 //   );
+// }
+
+// hoc - hight order component
+// function sum(a,b){
+
+//   return a + b;
+// }
+// function addToSix(a){
+//   return sum(6,a);
 // }

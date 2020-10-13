@@ -65,10 +65,17 @@ export function* get(action) {
   }
 }
 export function* getLogin(action) {
-  const requestURL = `${baseUrl}/getLogin/${action.idLogin}`;
-
+  console.log('saga print user',action.user);
+  const requestURL = `${baseUrl}/getLogin/`;
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(action.user),
+  };
   try {
-    const logged = yield call(request, requestURL);
+    const logged = yield call(request, requestURL, options);
     yield put(getLoginSuccess(logged));
   } catch (err) {
     yield put(getLoginError(err));

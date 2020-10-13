@@ -31,15 +31,15 @@ router.get('/list', (req, res) => {
     res.end(data);
   });
 });
-
-router.get('/getLogin/:id', (req, res) => {
+router.post('/getLogin', (req, res) => {
   fs.readFile(jsonPathLogin, 'utf8', (err, data) => {
     const list = JSON.parse(data);
-    const { id } = req.params;
-    const item = _getItem(list, id);
-    res.end(JSON.stringify(item));
+    const item = req.body;
+    const isExists = _getItemLogged(list, item);
+    res.end(JSON.stringify(isExists));
   });
 });
+
 router.get('/get/:id', (req, res) => {
   fs.readFile(jsonPath, 'utf8', (err, data) => {
     const list = JSON.parse(data);
@@ -105,7 +105,13 @@ const _getItem = (list, id) => {
   const currentItem = list.find(item => item.id.toString() === id.toString());
   return currentItem;
 };
-
+const _getItemLogged = (list, user) => {
+  const currentItem = list.find(
+    item =>
+      item.userName === user.name && item.password.toString() === user.password,
+  );
+  return currentItem;
+};
 const _updateItem = (list, updatedItem) => {
   const newList = [...list];
   const currentItemIndex = newList.findIndex(

@@ -15,9 +15,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
 import SaveIcon from '@material-ui/icons/Save';
 
-// import PropTypes from 'prop-types';
-// import styled from 'styled-components';
-
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
@@ -31,7 +28,6 @@ function Editdelivery({
   const handleEditChange = prop => event => {
     onUpdateDeliveryField(prop, event.target.value);
   };
-debugger;
   const handleClose = () => {
     closeDialog();
   };
@@ -123,14 +119,5 @@ Editdelivery.propTypes = {
   closeDialog: PropTypes.func,
   openDialog: PropTypes.func,
 };
-// function mapDispatchToProps(dispatch) {
-//   return {
-//       dispatch(setDailogIsOpen(open));
-//     },
-//   };
-
-// const withConnect = connect(
-//   mapDispatchToProps,
-// );
 
 export default memo(Editdelivery);

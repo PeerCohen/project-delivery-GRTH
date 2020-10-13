@@ -1,10 +1,6 @@
-/*
- *
- * LoginPage reducer
- *
- */
 import produce from 'immer';
-import * as dataLogged from 'data/dataLogged.json';
+// import * as dataLogged from 'data/dataLogged.json';
+
 import {
   DEFAULT_ACTION,
   SET_LOGIN,
@@ -23,14 +19,14 @@ export const initialState = {
   logged: false,
   currentUserName: false,
 };
-
-function getLogin(datalogin, userName, password) {
-  const currentUser = datalogin.find(
-    user => user.userName === userName,
-    // && user.password === password,
-  );
-  return currentUser;
-}
+// --------// mock data---------
+// function getLogin(datalogin, userName, password) {
+//   const currentUser = datalogin.find(
+//     user => user.userName === userName,
+//     // && user.password === password,
+//   );
+//   return currentUser;
+// }
 /* eslint-disable default-case, no-param-reassign */
 
 const loginPageReducer = (state = initialState, action) =>
@@ -69,31 +65,12 @@ const loginPageReducer = (state = initialState, action) =>
 
       case LOAD_LOGGED_ERROR:
       case GET_LOGGED_ERROR:
-        draft.error = action.error;
+        draft.error = 'action.error';
         draft.loading = false;
         break;
       default:
         break;
     }
   });
-
-// function loginPageReducer(state = initialState, action) {
-//   switch (action.type) {
-//     case DEFAULT_ACTION:
-//       return state;
-//     case SET_LOGIN:
-//       return { ...state, error: false, userName: action.userName };
-//     case GET_LOGIN:
-//       return {
-//         currentUserName: getLogin(
-//           state.logged,
-//           action.userName,
-//           action.password,
-//         ),
-//       };
-//     default:
-//       return state;
-//   }
-// }
 
 export default loginPageReducer;

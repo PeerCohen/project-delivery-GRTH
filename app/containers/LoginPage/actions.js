@@ -55,10 +55,10 @@ export function setLogin(userName) {
 // }
 // GET SPECIPIC DELIVERY
 
-export function getLogin(idLogin) {
+export function getLogin(user) {
   return {
     type: GET_LOGIN,
-    idLogin,
+    user,
   };
 }
 export function getLoginSuccess(logged) {

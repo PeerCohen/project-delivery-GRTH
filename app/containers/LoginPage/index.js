@@ -5,16 +5,13 @@
  *
  */
 
-import React, { memo } from 'react';
+import React, { memo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
-
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -28,13 +25,12 @@ import {
   makeSelectLoginPage,
   makeSelectLogin,
   makeSelectLogged,
+  makeSelectError,
 } from './selectors';
 import { setLogin, getLogin } from './actions';
 import history from 'utils/history';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
-import './login.scss';
+import './index.scss';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Button from '@material-ui/core/Button';
@@ -42,30 +38,26 @@ import Alert from '@material-ui/lab/Alert';
 import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
 import CloseIcon from '@material-ui/icons/Close';
+import errorBoundary from '../../Errorboundary/ErrorHOC';
 
 const navigateTo = () => history.push('/');
 
-export function LoginPage(props) {
+export function LoginPage({ error, ...props }) {
   useInjectReducer({ key: 'loginPage', reducer });
   useInjectSaga({ key: 'loginPage', saga });
-
   const [open, setOpen] = React.useState(false);
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const [valuePassword, setValuePassword] = React.useState({
     password: '',
     showPassword: false,
   });
+  const handleChangeP = prop => event => {
+    setValuePassword({ valuePassword, [prop]: event.target.value });
+  };
 
   const [valueUserName, setValueUserName] = React.useState({
     userName: '',
   });
-
-  const handleChangeP = prop => event => {
-    setValuePassword({ valuePassword, [prop]: event.target.value });
-  };
   const handleChangeU = event => {
     setValueUserName({ userName: event.target.value });
   };
@@ -76,18 +68,6 @@ export function LoginPage(props) {
     });
   };
 
-  const isCurrentUser = () => {
-    if (
-      props.logged.find(
-        user => user.userName === valueUserName.userName,
-        //  && user.password === valuePassword.password,
-      )
-    )
-      alert('רשום במערכת ');
-    else {
-      alert('לא רשום במערכת ');
-    }
-  };
   const checkTextInput = () => {
     if (!valueUserName || valueUserName.userName === '') {
       alert('Please Enter your username');
@@ -97,19 +77,10 @@ export function LoginPage(props) {
       alert('Please Enter password');
       return;
     }
-    setOpen(true);
     props.onGetingUser(valueUserName.userName, valuePassword.password);
     props.onSubmit(valueUserName.userName);
-    isCurrentUser();
-    // setTimeout(() => {
-    //   if (props.currentUser) {
-    //     console.log('yes');
-    //     alert('רשום במערכת ');
-    //   } else {
-    //     alert('לא רשום במערכת ');
-    //     console.log('no');
-    //   }
-    // }, 3000);
+    // isUserLogged();
+    setOpen(true);
   };
 
   return (
@@ -133,12 +104,6 @@ export function LoginPage(props) {
           success checked !{'\n'} Click here to move to the home page
         </Alert>
       </Collapse>
-
-      <Helmet>
-        <title>LoginPage</title>
-        <meta name="description" content="Description of LoginPage" />
-      </Helmet>
-      {/* <FormattedMessage {...messages.header} /> */}
       <hr />
       <FormControl>
         <InputLabel htmlFor="standard-adornment-password">userName</InputLabel>
@@ -182,6 +147,7 @@ export function LoginPage(props) {
       <br />
       <br />
       <br />
+      <p>{error}</p>
       <Button
         variant="outlined"
         color="primary"
@@ -192,9 +158,6 @@ export function LoginPage(props) {
         login
       </Button>
       <hr />
-      <Backdrop open={open} onClick={handleClose}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
     </div>
   );
 }
@@ -202,7 +165,8 @@ export function LoginPage(props) {
 LoginPage.propTypes = {
   onSubmit: PropTypes.func,
   onGetingUser: PropTypes.func,
-  currentUser: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  error: PropTypes.any,
+  // currentUser: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   logged: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
 };
 
@@ -210,6 +174,7 @@ const mapStateToProps = createStructuredSelector({
   loginPage: makeSelectLoginPage(),
   currentUser: makeSelectLogin(),
   logged: makeSelectLogged(),
+  error: makeSelectError(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -217,8 +182,7 @@ function mapDispatchToProps(dispatch) {
     onSubmit: userName => {
       dispatch(setLogin(userName));
     },
-    onGetingUser: (userName, password) =>
-      dispatch(getLogin(userName, password)),
+    onGetingUser: (name, password) => dispatch(getLogin({ name, password })),
   };
 }
 
@@ -230,4 +194,5 @@ const withConnect = connect(
 export default compose(
   withConnect,
   memo,
+  errorBoundary,
 )(LoginPage);

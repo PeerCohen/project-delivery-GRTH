@@ -7,13 +7,8 @@
 import React, { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Helmet } from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
-
-import { useInjectSaga } from 'utils/injectSaga';
-import { useInjectReducer } from 'utils/injectReducer';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -21,14 +16,9 @@ import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import { addDelivery } from 'containers/App/actions';
 
 import makeSelectAddDelivery from './selectors';
-import reducer from './reducer';
-import saga from './saga';
-import messages from './messages';
 import './index.scss';
 
 export function AddDelivery({ onAdded, history }) {
-  useInjectReducer({ key: 'addDelivery', reducer });
-  useInjectSaga({ key: 'addDelivery', saga });
   const [add, setAdd] = useState('');
   const handleAddChange = propertyName => event => {
     const addDel = { ...add };
@@ -96,14 +86,7 @@ export function AddDelivery({ onAdded, history }) {
         <Button
           onClick={() => {
             onAdded(add);
-            setAdd({
-              name: '',
-              phone: '',
-              email: '',
-              addressForm: '',
-              addressTo: '',
-              date: '',
-            });
+            setAdd(false);
             history.push('/DeliveryTable');
           }}
           variant="outlined"
@@ -118,18 +101,12 @@ export function AddDelivery({ onAdded, history }) {
 
   return (
     <div>
-      <Helmet>
-        <title>AddDelivery</title>
-        <meta name="description" content="Description of AddDelivery" />
-      </Helmet>
-      <FormattedMessage {...messages.header} />
       <div className="AddingDiv">{AddingToList()}</div>
     </div>
   );
 }
 
 AddDelivery.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   onAdded: PropTypes.func,
   history: PropTypes.any,
 };
