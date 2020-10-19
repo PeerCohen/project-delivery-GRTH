@@ -1,13 +1,15 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
-import AddIcon from '@material-ui/icons/Add';
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import 'react-table-v6/react-table.css';
 import Popover from '@material-ui/core/Popover';
 import PinDropIcon from '@material-ui/icons/PinDrop';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 import {
   makeSelectdelivery,
@@ -28,21 +30,26 @@ import Typography from '@material-ui/core/Typography';
 import RoomIcon from '@material-ui/icons/Room';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
+import DeliveryDetalis from '../../components/DeliveryDetails';
+import privteHOC from '../../HOC/private';
 import makeSelectDeliveryTable from './selectors';
 
 import Map from '../../components/Map';
 import './index.scss';
-
 export function DeliveryTable({
   listDelivery,
   onSelectDelivery,
   currentDelivery,
   onUpdateDelivery,
   onUpdateDeliveryField,
+  onDeleteDelivery,
   ...props
 }) {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [rowDateils, setRow] = React.useState();
+  const [anchorEl, setAnchorEl] = useState(false);
+  const [rowDateils, setRow] = useState();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openDetalis, setOpenDetalis] = useState(false);
+  const [openMap, setOpenMap] = useState(false);
   const handleClick = (rowData, column) => {
     if (column.Header === 'AddressTo') {
       setRow(rowData);
@@ -53,45 +60,19 @@ export function DeliveryTable({
     setRow(data);
   };
   const handleClose = () => {
-    setAnchorEl(null);
+    setAnchorEl(false);
   };
 
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
-
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const handleClickOpenDialogEdit = () => {
-    setOpenDialog(true);
-  };
-  const closeDialog = () => {
-    setOpenDialog(false);
-  };
-  const [openMap, setOpenMap] = React.useState(false);
+  const id = anchorEl && 'simple-popover';
   const handleClickOpenMap = () => {
     setOpenMap(true);
   };
-  function useData() {
-    const data =
-      listDelivery &&
-      listDelivery.map(delivery => ({
-        id: delivery.id,
-        name: delivery.name,
-        phone: delivery.phone,
-        addressTo: delivery.addressTo,
-        latitudeFrom: delivery.latitudeFrom,
-        longitudeFrom: delivery.longitudeFrom,
-        latitudeTo: delivery.latitudeTo,
-        longitudeTo: delivery.longitudeTo,
-      }));
-    return data;
-  }
 
   function Columns() {
     return [
       {
-        // show: false,
-        // Header: 'Id',
         accessor: 'id',
+        width: 'max-content',
       },
       {
         Header: 'name',
@@ -108,45 +89,50 @@ export function DeliveryTable({
       {
         Cell: row => (
           <div>
-            <Tooltip title="Edit">
-              <Button
-                className="editButton"
-                variant="outlined"
-                color="primary"
-                size="large"
-                justify-content="center"
-                endIcon={<EditIcon color="primary" fontSize="large" />}
-                onClick={() => {
-                  onSelectDelivery(row.original.id);
-                  handleClickOpenDialogEdit();
-                }}
-              />
-            </Tooltip>
-            {'     '}
-            <Tooltip title="Delete">
-              <Button
-                className="deleteButton"
-                variant="outlined"
-                color="primary"
-                size="large"
-                onClick={() => props.onDeleteDelivery(row.index)}
-                endIcon={<DeleteIcon color="action" fontSize="large" />}
-              />
-            </Tooltip>
-            {'     '}
-            <Tooltip title="See the map at the bottom of the page ">
-              <Button
-                className="mapButton"
-                variant="outlined"
-                color="primary"
-                size="large"
-                onClick={() => {
-                  handelSetRowData(row.original);
-                  handleClickOpenMap();
-                }}
-                endIcon={<RoomIcon fontSize="large" color="secondary" />}
-              />
-            </Tooltip>
+            <ButtonGroup
+              color="primary"
+              aria-label="outlined primary button group"
+              size="large"
+            >
+              <Tooltip title="Edit">
+                <Button
+                  className="editButton"
+                  endIcon={<EditIcon color="primary" fontSize="large" />}
+                  onClick={() => {
+                    onSelectDelivery(row.original.id);
+                    setOpenDialog(true);
+                  }}
+                />
+              </Tooltip>
+
+              <Tooltip title="Delete">
+                <Button
+                  className="deleteButton"
+                  onClick={() => onDeleteDelivery(row.index)}
+                  endIcon={<DeleteIcon color="action" fontSize="large" />}
+                />
+              </Tooltip>
+
+              <Tooltip title="See the map at the bottom of the page ">
+                <Button
+                  className="mapButton"
+                  onClick={() => {
+                    handelSetRowData(row.original);
+                    handleClickOpenMap();
+                  }}
+                  endIcon={<RoomIcon fontSize="large" color="secondary" />}
+                />
+              </Tooltip>
+              <Tooltip title="more details">
+                <Button
+                  onClick={() => {
+                    onSelectDelivery(row.original.id);
+                    setOpenDetalis(true);
+                  }}
+                  endIcon={<MoreVertIcon color="primary" fontSize="large" />}
+                />
+              </Tooltip>
+            </ButtonGroup>
           </div>
         ),
       },
@@ -156,36 +142,40 @@ export function DeliveryTable({
     <div>
       <Button
         className="buttomAdding"
-        variant="outlined"
+        variant="contained"
         color="primary"
         size="large"
         onClick={() => props.history.push('/AddDelivery')}
-        endIcon={<AddIcon color="action" fontSize="large" />}
+        endIcon={<PlaylistAddIcon fontSize="large" />}
       >
         Add new delivery
       </Button>
       <ReactTable
         getTdProps={(state, rowInfo, column) => ({
-          onClick: (e, handleOriginal) => {
+          onClick: () => {
             console.log('It was in this row:', rowInfo);
             console.log('It was in this column:', column);
-            if (handleOriginal) {
-              handleOriginal();
-            }
             handleClick(rowInfo.original, column);
           },
         })}
         defaultPageSize={10}
-        data={useData()}
+        data={listDelivery}
         columns={Columns()}
       />
-      {openDialog && (
+      {openDialog && currentDelivery && (
         <Editdelivery
           currentDelivery={currentDelivery}
           onUpdateDelivery={onUpdateDelivery}
           onUpdateDeliveryField={onUpdateDeliveryField}
           openDialog={openDialog}
-          closeDialog={closeDialog}
+          closeDialog={setOpenDialog}
+        />
+      )}
+      {openDetalis && currentDelivery && (
+        <DeliveryDetalis
+          currentDelivery={currentDelivery}
+          openDetalis={openDetalis}
+          closeDetails={setOpenDetalis}
         />
       )}
       {openMap && (
@@ -195,7 +185,7 @@ export function DeliveryTable({
       )}
       <Popover
         id={id}
-        open={open}
+        open={anchorEl}
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
@@ -208,15 +198,11 @@ export function DeliveryTable({
         }}
       >
         <Typography className="popup">
-          <br />
-          <br />
-          <MoreHorizIcon color="secondary" /> num delivery :
-          <br />
-          {rowDateils && rowDateils.id}
-          <br />
-          <br />
+          <div>
+            <MoreHorizIcon color="secondary" /> num delivery :
+            {rowDateils && rowDateils.id}
+          </div>
           <PinDropIcon color="secondary" /> Destination location :
-          <br />
           {rowDateils && rowDateils.addressTo}
         </Typography>
       </Popover>
@@ -259,8 +245,9 @@ const withConnect = connect(
   mapStateToProps,
   mapDispatchToProps,
 );
-
+//const HOC = privteHOC(DeliveryTable);
 export default compose(
   withConnect,
   memo,
+  //HOC,
 )(DeliveryTable);

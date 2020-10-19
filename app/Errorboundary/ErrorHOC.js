@@ -1,4 +1,6 @@
 import React from 'react';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import './errorBoundery.scss';
 
 class ErrorBoundary extends React.Component {
   state = { error: null, errorInfo: null };
@@ -13,13 +15,15 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.errorInfo) {
       return (
-        <div>
-          <h2>Something went wrong.</h2>
-          <details style={{ whiteSpace: 'pre-wrap' }}>
-            {this.state.error && this.state.error.toString()}
-            <br />
-            {this.state.errorInfo.componentStack}
-          </details>
+        <div className="errorBoundery">
+          <Alert severity="error">
+            <AlertTitle>Error</AlertTitle>
+            <p className="subTitle"> Something went wrong.</p>
+            {this.state.error && (
+              <p className="errorString">{this.state.error.toString()} </p>
+            )}
+            <strong>{this.state.errorInfo.componentStack}</strong>
+          </Alert>
         </div>
       );
     }

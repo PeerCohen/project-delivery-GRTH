@@ -65,7 +65,6 @@ export function* get(action) {
   }
 }
 export function* getLogin(action) {
-  console.log('saga print user',action.user);
   const requestURL = `${baseUrl}/getLogin/`;
   const options = {
     method: 'POST',

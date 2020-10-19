@@ -1,32 +1,21 @@
 import produce from 'immer';
-// import * as dataLogged from 'data/dataLogged.json';
-
 import {
   DEFAULT_ACTION,
-  SET_LOGIN,
   GET_LOGIN,
   GET_LOGGED_ERROR,
   GET_LOGGED_SUCCESS,
   LOAD_LOGGED,
   LOAD_LOGGED_SUCCESS,
   LOAD_LOGGED_ERROR,
+  SET_LOGOUT,
 } from './constants';
 
 export const initialState = {
-  userName: '',
   error: false,
-  // logged: dataLogged.default,
   logged: false,
   currentUserName: false,
 };
-// --------// mock data---------
-// function getLogin(datalogin, userName, password) {
-//   const currentUser = datalogin.find(
-//     user => user.userName === userName,
-//     // && user.password === password,
-//   );
-//   return currentUser;
-// }
+
 /* eslint-disable default-case, no-param-reassign */
 
 const loginPageReducer = (state = initialState, action) =>
@@ -34,16 +23,11 @@ const loginPageReducer = (state = initialState, action) =>
     switch (action.type) {
       case DEFAULT_ACTION:
         break;
-      case SET_LOGIN:
-        draft.userName = action.userName;
-        draft.error = action.error;
+      case SET_LOGOUT:
+        draft.currentUserName = false;
+        window.open('/HomePage', '_self');
         break;
       case GET_LOGIN:
-        // draft.currentUserName = getLogin(
-        //   state.logged,
-        //   action.userName,
-        //   action.password,
-        // ); draft.loading = true;
         draft.error = false;
         draft.currentUserName = false;
         break;

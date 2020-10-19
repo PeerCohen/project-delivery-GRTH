@@ -4,12 +4,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 // import HomePage from 'containers/HomePage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import AddDelivery from 'containers/AddDelivery/Loadable';
 // import LoginPage from 'containers/LoginPage/Loadable';
-// import DeliveryTable from 'containers/DeliveryTable/Loadable';
+import PrivatePage from 'components/PrivatePage';
 import { useInjectSaga } from 'utils/injectSaga';
 
 import Header from 'components/Header';
@@ -20,9 +21,9 @@ import {
   makeSelectLoading,
   makeSelectError,
 } from './selectors';
-import { makeSelectLogged } from '../LoginPage/selectors';
+import { makeSelectNameLogged, makeSelectLogged } from '../LoginPage/selectors';
 import { loadDelivery } from './actions';
-import { loadLogged } from '../LoginPage/actions';
+import { loadLogged, setLogout } from '../LoginPage/actions';
 
 import './index.scss';
 
@@ -32,11 +33,11 @@ const DeliveryTable = lazy(() => import('containers/DeliveryTable/Loadable'));
 
 export function App({
   deliveries,
-  loading,
-  error,
   onLoadDeliveries,
   logged,
   onLoadLogged,
+  userName,
+  onSetLogout,
 }) {
   useInjectSaga({ key: 'app', saga });
   useEffect(() => {
@@ -46,10 +47,12 @@ export function App({
 
   return (
     <div>
-      <Header />
-      {logged && <div className="loading">logged...</div>}
-      {loading && <div className="loading">loading...</div>}
-      {error && <div className="error">error occured</div>}
+      <ReCAPTCHA
+        sitekey="6LfggdgZAAAAAK_zS2bPhZUE55kAGK7LLNIX8BD6"
+        size="invisible"
+        render="explicit"
+      />
+      <Header userName={userName} onSetLogout={onSetLogout} />
       <Suspense fallback={<div>Loading...</div>}>
         <Switch>
           <Route exact path="/" component={HomePage} />
@@ -57,6 +60,7 @@ export function App({
           <Route exact path="/homePage" component={HomePage} />
           <Route exact path="/LoginPage" component={LoginPage} />
           <Route exact path="/DeliveryTable" component={DeliveryTable} />
+          <Route exact path="/PrivatePage" component={PrivatePage} />
           <Route component={NotFoundPage} />
         </Switch>
       </Suspense>
@@ -66,10 +70,10 @@ export function App({
 App.propTypes = {
   deliveries: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   logged: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
-  loading: PropTypes.bool,
-  error: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   onLoadDeliveries: PropTypes.func,
   onLoadLogged: PropTypes.func,
+  userName: PropTypes.string,
+  onSetLogout: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -77,12 +81,14 @@ const mapStateToProps = createStructuredSelector({
   logged: makeSelectLogged(),
   loading: makeSelectLoading(),
   error: makeSelectError(),
+  userName: makeSelectNameLogged(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     onLoadDeliveries: () => dispatch(loadDelivery()),
     onLoadLogged: () => dispatch(loadLogged()),
+    onSetLogout: () => dispatch(setLogout()),
   };
 }
 

@@ -1,18 +1,12 @@
-/*
- *
- * LoginPage actions
- *
- */
-
 import {
   LOAD_LOGGED,
   LOAD_LOGGED_SUCCESS,
   LOAD_LOGGED_ERROR,
   DEFAULT_ACTION,
-  SET_LOGIN,
   GET_LOGIN,
   GET_LOGGED_SUCCESS,
   GET_LOGGED_ERROR,
+  SET_LOGOUT,
 } from './constants';
 
 export function loadLogged() {
@@ -38,23 +32,11 @@ export function defaultAction() {
     type: DEFAULT_ACTION,
   };
 }
-
-export function setLogin(userName) {
+export function setLogout() {
   return {
-    type: SET_LOGIN,
-    userName,
+    type: SET_LOGOUT,
   };
 }
-
-// export function getLogin(userName, password) {
-//   return {
-//     type: GET_LOGIN,
-//     userName,
-//     password,
-//   };
-// }
-// GET SPECIPIC DELIVERY
-
 export function getLogin(user) {
   return {
     type: GET_LOGIN,

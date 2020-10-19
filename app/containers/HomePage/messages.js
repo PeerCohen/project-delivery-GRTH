@@ -12,4 +12,12 @@ export default defineMessages({
     id: `${scope}.header`,
     defaultMessage: 'Wellcome to Get Moving ',
   },
+  sponsoredText: {
+    id: `${scope}.sponsoredText`,
+    defaultMessage: 'Sponsored',
+  },
+  infoText: {
+    id: `${scope}.infoText`,
+    defaultMessage: 'Your partner for a successful !',
+  },
 });

@@ -1,33 +1,25 @@
-/**
- *
- * Header
- *
- */
-
-import React from 'react';
-import {Link} from 'react-router-dom';
-import Button from '@material-ui/core/Button';
+import React, { useState } from 'react';
 import HomeIcon from '@material-ui/icons/Home';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ListIcon from '@material-ui/icons/List';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import history from 'utils/history';
 
+import history from 'utils/history';
 import './header.scss';
+import PropTypes from 'prop-types';
+import AppBar from '../AppBar';
 import GRTH from '../../images/GRTH.png';
 
-// import PropTypes from 'prop-types';
-// import styled from 'styled-components';
-
-function Header() {
-  const [value, setValue] = React.useState('recents');
+function Header({ userName, onSetLogout }) {
+  const [value, setValue] = useState('recents');
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
   return (
     <div className="wrapper">
+      <AppBar userName={userName} onSetLogout={onSetLogout} />
       <div className="imgHeader">
         <img className="GRTHimg" src={GRTH} alt="imageGRTH" />
       </div>
@@ -46,14 +38,14 @@ function Header() {
           <BottomNavigationAction
             label="Login"
             value="login"
-            icon={<ExitToAppIcon style={{fontSize: 40}} />}
+            icon={<ExitToAppIcon style={{ fontSize: 40 }} />}
             onClick={() => history.push('/LoginPage')}
           />
           <BottomNavigationAction
             label="List Delivery"
             value="list delivery"
-            icon={<ListIcon style={{fontSize: 40}} />}
-            onClick={() => history.push('/DeliveryTable')}
+            icon={<ListIcon style={{ fontSize: 40 }} />}
+            onClick={() => history.push('/PrivatePage')}
           />
         </BottomNavigation>
       </div>
@@ -61,6 +53,9 @@ function Header() {
   );
 }
 
-Header.propTypes = {};
+Header.propTypes = {
+  userName: PropTypes.string,
+  onSetLogout: PropTypes.func,
+};
 
 export default Header;

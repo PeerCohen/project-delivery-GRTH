@@ -25,6 +25,11 @@ const makeSelectLogin = () =>
     selectLoginPageDomain,
     substate => substate.currentUserName,
   );
+const makeSelectNameLogged = () =>
+  createSelector(
+    selectLoginPageDomain,
+    substate => substate.currentUserName.userName,
+  );
 const makeSelectLogged = () =>
   createSelector(
     selectLoginPageDomain,
@@ -40,5 +45,6 @@ export {
   makeSelectLogin,
   makeSelectLogged,
   makeSelectError,
+  makeSelectNameLogged,
 };
 export { selectLoginPageDomain };

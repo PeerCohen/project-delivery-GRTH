@@ -1,7 +1,6 @@
 import React, { memo, useEffect } from 'react';
 import { Loader } from 'google-maps';
-// new
-// AIzaSyA0cLYdc8dTMg2Mia96KbLaozHModyNvQM
+
 // AIzaSyA0cLYdc8dTMg2Mia96KbLaozHModyNvQM
 const options = {
   /* todo */
@@ -10,13 +9,22 @@ const loader = new Loader('AIzaSyA0cLYdc8dTMg2Mia96KbLaozHModyNvQM', options);
 
 function Map({ row }) {
   console.log('row', row);
-  const { latitudeFrom, longitudeFrom, latitudeTo, longitudeTo } = row;
+  const {
+    latitudeFrom,
+    longitudeFrom,
+    latitudeTo,
+    longitudeTo,
+    addressTo,
+    addressForm,
+  } = row;
 
   useEffect(() => {
     async function init() {
       const google = await loader.load();
-      const start = new google.maps.LatLng(latitudeFrom, longitudeFrom);
-      const end = new google.maps.LatLng(latitudeTo, longitudeTo);
+      // const start = new google.maps.LatLng(latitudeFrom, longitudeFrom);
+      // const end = new google.maps.LatLng(latitudeTo, longitudeTo);
+      const start = addressTo;
+      const end = addressForm;
       const directionsService = new google.maps.DirectionsService();
       const directionsRenderer = new google.maps.DirectionsRenderer();
       const map = new google.maps.Map(document.getElementById('map'), {
